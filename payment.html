@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment - EKAMAS PIJIRUN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+  <link rel="stylesheet" href="animated-background.css" />
+  <style>
+    /*css*/
+    .fade-in {
+      animation: fadeIn 1s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    button {
+      position: relative;
+      overflow: hidden;
+      transition: background-color 0.3s ease;
+    }
+    button::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 100%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s ease, height 0.4s ease;
+      pointer-events: none;
+    }
+    button:active::after {
+      width: 200%;
+      height: 200%;
+      transition: 0s;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+  <header class="bg-indigo-700 text-white py-6 text-center fade-in">
+    <h1 class="text-3xl font-bold">EKAMAS PIJIRUN - Payment</h1>
+  </header>
+
+  <main class="flex-grow max-w-3xl mx-auto p-6 fade-in" style="animation-delay: 0.3s;">
+    <h2 class="text-2xl font-semibold mb-6">Pilih Metode Pembayaran</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300 fade-in" style="animation-delay: 0.6s;">
+        <i class="fas fa-qrcode text-indigo-600 text-6xl mb-4 animate-pulse"></i>
+        <h3 class="text-xl font-semibold mb-2">QRIS</h3>
+        <p class="mb-4 text-center">Scan QR code berikut untuk melakukan pembayaran melalui aplikasi bank Anda.</p>
+        <img src="frame.png" alt="QRIS QR Code" class="w-48 h-48 object-contain mb-4 rounded-lg shadow-lg" />
+        <button id="qris-button" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition relative overflow-hidden">Saya Sudah Membayar</button>
+      </div>
+
+      
+      <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300 fade-in" style="animation-delay: 0.9s;">
+        <i class="fas fa-university text-indigo-600 text-6xl mb-4 animate-pulse"></i>
+        <h3 class="text-xl font-semibold mb-2">Transfer Bank</h3>
+        <p class="mb-4 text-center">Pilih bank untuk transfer pembayaran:</p>
+        <select id="bank-select" class="mb-4 p-2 border border-gray-300 rounded w-full max-w-xs">
+          <option value="bca">Bank BCA</option>
+          <option value="bri">Bank BRI</option>
+        </select>
+        <ul id="bank-details" class="text-left mb-4 space-y-2">
+          <li><strong>Bank:</strong> Bank BCA</li>
+          <li><strong>Nomor Rekening:</strong> 8950554071</li>
+          <li><strong>Atas Nama:</strong> AN. Dyah Ratna Anindhita</li>
+        </ul>
+        <button id="bank-button" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition relative overflow-hidden">Saya Sudah Membayar</button>
+      </div>
+    </div>
+
+    <div class="mt-10 text-center fade-in" style="animation-delay: 1.2s;">
+      <a href="index.html" class="text-indigo-700 hover:underline font-semibold">&larr; Kembali ke Beranda</a>
+    </div>
+  </main>
+
+  <footer class="bg-gray-100 text-gray-600 py-6 text-center text-sm fade-in" style="animation-delay: 1.5s;">
+    &copy; 2025 EKAMAS PIJIRUN. All rights reserved.
+  </footer>
+
+  <div class="animated-background"></div>
+
+  <script src="animations.js"></script>
+
+  <audio id="menu-audio" src="menu.mp3" preload="auto" loop></audio>
+
+  <script>
+    //masuk
+    const qrisPaymentLink = "https://api.whatsapp.com/send/?phone=6282227027560&text=Halo+saya+ingin+melakukan+pembayaran+sebesar+Rp100.000+via+qris&type=phone_number&app_absent=0";
+
+    const bankPaymentLinks = {
+      bca: "https://api.whatsapp.com/send/?phone=6282227027560&text=Halo+saya+ingin+melakukan+pembayaran+sebesar+Rp100.000+via+bank+bca&type=phone_number&app_absent=0",
+      bri: "https://api.whatsapp.com/send/?phone=6282227027560&text=Halo+saya+ingin+melakukan+pembayaran+sebesar+Rp100.000+via+bank+bri&type=phone_number&app_absent=0"
+    };
+
+    const bankDetails = {
+      bca: {
+        bank: "Bank BCA",
+        accountNumber: "8950554071",
+        accountHolder: "AN. Dyah Ratna Anindhita"
+      },
+      bri: {
+        bank: "Bank BRI",
+        accountNumber: "0153 0103 8221 532",
+        accountHolder: "AN. Fawwaz Najib Ahmad"
+      }
+    };
+
+    const menuAudio = document.getElementById('menu-audio');
+    menuAudio.volume = 0.1;
+
+    window.addEventListener('load', () => {
+      menuAudio.play().catch(e => {
+        console.warn('Autoplay prevented:', e);
+      });
+    });
+
+    document.getElementById('qris-button').addEventListener('click', () => {
+      window.location.href = qrisPaymentLink;
+    });
+
+    const bankSelect = document.getElementById('bank-select');
+    const bankDetailsList = document.getElementById('bank-details');
+    const bankButton = document.getElementById('bank-button');
+
+    function updateBankDetails() {
+      const selectedBank = bankSelect.value;
+      const details = bankDetails[selectedBank];
+      bankDetailsList.innerHTML = `
+        <li><strong>Bank:</strong> ${details.bank}</li>
+        <li><strong>Nomor Rekening:</strong> ${details.accountNumber}</li>
+        <li><strong>Atas Nama:</strong> ${details.accountHolder}</li>
+      `;
+      bankButton.onclick = () => {
+        window.location.href = bankPaymentLinks[selectedBank];
+      };
+    }
+
+    bankSelect.addEventListener('change', updateBankDetails);
+
+    //mepmep
+    updateBankDetails();
+  </script>
+</body>
+</html>
